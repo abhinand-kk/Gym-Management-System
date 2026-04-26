@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block header %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white p-4">
+            <h5 class="card-title"><i class="bi bi-people-fill me-2"></i>Total Clients</h5>
+            <h2 class="display-4 fw-bold">{{ total_clients }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white p-4">
+            <h5 class="card-title"><i class="bi bi-check-circle-fill me-2"></i>Active Memberships</h5>
+            <h2 class="display-4 fw-bold">{{ active_memberships }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white p-4">
+            <h5 class="card-title"><i class="bi bi-x-circle-fill me-2"></i>Expired Memberships</h5>
+            <h2 class="display-4 fw-bold">{{ expired_memberships }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 border-0 shadow-sm mt-4">
+    <h4 class="mb-4 fw-bold">Recent Registrations</h4>
+    {% if recent_registrations %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Client</th>
+                    <th>Plan</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membership in recent_registrations %}
+                <tr>
+                    <td>{{ membership.user.first_name }} {{ membership.user.last_name }}</td>
+                    <td><span class="badge bg-secondary">{{ membership.membership_type }}</span></td>
+                    <td>{{ membership.start_date|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="badge {% if membership.payment_status == 'Paid' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {{ membership.payment_status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">No recent registrations found.</p>
+    {% endif %}
+</div>
+{% endblock %}

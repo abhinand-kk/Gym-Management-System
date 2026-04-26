@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block header %}Memberships{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <form method="get" class="d-flex">
+            <select name="type" class="form-select me-2" style="max-width: 200px;">
+                <option value="">All Types</option>
+                <option value="Monthly" {% if request.GET.type == 'Monthly' %}selected{% endif %}>Monthly</option>
+                <option value="Quarterly" {% if request.GET.type == 'Quarterly' %}selected{% endif %}>Quarterly</option>
+                <option value="Yearly" {% if request.GET.type == 'Yearly' %}selected{% endif %}>Yearly</option>
+            </select>
+            <select name="status" class="form-select me-2" style="max-width: 200px;">
+                <option value="">All Statuses</option>
+                <option value="Paid" {% if request.GET.status == 'Paid' %}selected{% endif %}>Paid</option>
+                <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
+            </select>
+            <button class="btn btn-outline-primary" type="submit">Filter</button>
+        </form>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'membership_new' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add New Membership</a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Type</th>
+                        <th>Fee</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membership in memberships %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-4 me-2 text-secondary"></i>
+                                <div>
+                                    <div class="fw-bold">{{ membership.client.first_name }} {{ membership.client.last_name }}</div>
+                                    <div class="text-muted small">{{ membership.client.phone_number }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ membership.membership_type }}</span></td>
+                        <td>${{ membership.registration_fee }}</td>
+                        <td>{{ membership.start_date|date:"M d, Y" }} to {{ membership.end_date|date:"M d, Y" }}</td>
+                        <td>
+                            {% if membership.payment_status == 'Paid' %}
+                                <span class="badge bg-success">Paid</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'membership_edit' membership.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'membership_delete' membership.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No memberships found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

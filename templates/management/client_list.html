@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}Clients{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <form method="get" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search by name or phone..." value="{{ request.GET.q|default_if_none:'' }}">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'client_new' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add New Client</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td><span class="fw-bold">{{ client.first_name }} {{ client.last_name }}</span></td>
+                        <td>{{ client.phone_number }}</td>
+                        <td>{{ client.email }}</td>
+                        <td>{{ client.get_gender_display }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'client_edit' client.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'client_delete' client.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No clients found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

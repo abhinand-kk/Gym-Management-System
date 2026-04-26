@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block header %}Client Management{% endblock %}
+
+{% block content %}
+<div class="card p-4 border-0 shadow-sm mb-4">
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Search by name or phone..." value="{{ request.GET.q }}">
+        </div>
+        <div class="col-md-3">
+            <select name="type" class="form-select">
+                <option value="">All Plan Types</option>
+                <option value="Monthly" {% if request.GET.type == 'Monthly' %}selected{% endif %}>Monthly</option>
+                <option value="Quarterly" {% if request.GET.type == 'Quarterly' %}selected{% endif %}>Quarterly</option>
+                <option value="Yearly" {% if request.GET.type == 'Yearly' %}selected{% endif %}>Yearly</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Statuses</option>
+                <option value="Active" {% if request.GET.status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Expired" {% if request.GET.status == 'Expired' %}selected{% endif %}>Expired</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="card p-4 border-0 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 fw-bold">Clients Directory</h4>
+        <a href="{% url 'signup' %}" class="btn btn-success"><i class="bi bi-person-plus"></i> Add New Client</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Plan Type</th>
+                    <th>Payment</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                {{ client.user.first_name|first|default:client.user.username|first|upper }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ client.user.first_name }} {{ client.user.last_name }}</h6>
+                                <small class="text-muted">{{ client.user.email }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ client.phone_number }}</td>
+                    <td>
+                        {% with mem=client.user.memberships.last %}
+                            {% if mem %}
+                                <span class="badge bg-secondary">{{ mem.membership_type }}</span>
+                            {% else %}
+                                <span class="text-muted small">No Plan</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {% with mem=client.user.memberships.last %}
+                            {% if mem %}
+                                <span class="badge {% if mem.payment_status == 'Paid' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                    {{ mem.payment_status }}
+                                </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td class="text-end">
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'membership_new' %}?user_id={{ client.user.id }}"><i class="bi bi-plus-circle me-2 text-primary"></i> Add Plan</a></li>
+                                {% with mem=client.user.memberships.last %}
+                                    {% if mem %}
+                                        <li><a class="dropdown-item" href="{% url 'membership_edit' mem.pk %}"><i class="bi bi-pencil me-2 text-warning"></i> Edit Plan</a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'membership_delete' mem.pk %}"><i class="bi bi-trash me-2"></i> Delete Plan</a></li>
+                                    {% endif %}
+                                {% endwith %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'client_delete' client.user.pk %}"><i class="bi bi-person-x me-2"></i> Delete Client</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No clients found matching the criteria.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

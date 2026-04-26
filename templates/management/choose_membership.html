@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center py-5">
+    <div class="card col-md-8 shadow-lg border-0" style="border-radius: 1rem;">
+        <div class="row g-0">
+            <!-- Left side: Plan Summary -->
+            <div class="col-md-5 bg-primary text-white p-5 d-flex flex-column justify-content-center" style="border-radius: 1rem 0 0 1rem;">
+                <h3 class="fw-bold mb-4">Plan Summary</h3>
+                <div class="mb-4">
+                    <h5 class="text-white-50">Selected Plan</h5>
+                    <h2 class="fw-bold">{{ plan }}</h2>
+                </div>
+                <div>
+                    <h5 class="text-white-50">Total Fee</h5>
+                    <h2 class="fw-bold">${{ fee }}</h2>
+                </div>
+                <hr class="my-4 border-light">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle me-2"></i> Access to all facilities</li>
+                    <li class="mb-2"><i class="bi bi-check-circle me-2"></i> Member welcome kit</li>
+                    <li class="mb-2"><i class="bi bi-check-circle me-2"></i> Cancel anytime</li>
+                </ul>
+            </div>
+            
+            <!-- Right side: Profile Form -->
+            <div class="col-md-7 p-5">
+                <h3 class="fw-bold mb-4">Complete Profile</h3>
+                <p class="text-muted mb-4">Please fill in your details to finalize your membership registration.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.email|as_crispy_field }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.age|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.gender|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.phone_number|as_crispy_field }}
+                    </div>
+                    <div class="mb-4">
+                        {{ form.address|as_crispy_field }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Complete Registration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block header %}{% if object %}Edit Client{% else %}New Client{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm" style="max-width: 800px;">
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">{{ form.first_name|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.last_name|as_crispy_field }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4">{{ form.age|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.gender|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.phone_number|as_crispy_field }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">{{ form.email|as_crispy_field }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">{{ form.address|as_crispy_field }}</div>
+            </div>
+            <div class="mt-4 pt-3 border-top text-end">
+                <a href="{% url 'client_list' %}" class="btn btn-light me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Client</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Welcome, {{ user.first_name|default:user.username }}!</h2>
+            <p class="text-muted">Here's an overview of your GymCore membership.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Membership Status Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-white border-0 pt-4 pb-0">
+                    <h5 class="card-title fw-bold m-0"><i class="bi bi-star-fill text-warning me-2"></i> Membership Status</h5>
+                </div>
+                <div class="card-body mt-3">
+                    {% if membership %}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h3 class="fw-bold text-primary mb-0">{{ membership.membership_type }} Plan</h3>
+                                {% if is_active %}
+                                    <span class="badge bg-success mt-2 px-3 py-2 rounded-pill">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger mt-2 px-3 py-2 rounded-pill">Expired</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <p class="text-muted mb-0 small">Payment Status</p>
+                                <span class="badge {% if membership.payment_status == 'Paid' %}bg-success{% else %}bg-warning text-dark{% endif %} px-2 py-1">
+                                    {{ membership.payment_status }}
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <p class="text-muted small mb-1">Start Date</p>
+                                <p class="fw-bold">{{ membership.start_date|date:"M d, Y" }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-muted small mb-1">End Date</p>
+                                <p class="fw-bold {% if not is_active %}text-danger{% endif %}">{{ membership.end_date|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-exclamation-circle text-muted fs-1 mb-3 d-block"></i>
+                            <h5>No Active Membership</h5>
+                            <p class="text-muted">You haven't subscribed to any plan yet.</p>
+                            <a href="{% url 'plans' %}" class="btn btn-primary mt-2">Browse Plans</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Info Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-white border-0 pt-4 pb-0">
+                    <h5 class="card-title fw-bold m-0"><i class="bi bi-person-circle text-primary me-2"></i> Profile Details</h5>
+                </div>
+                <div class="card-body mt-3">
+                    {% if profile %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Full Name</span>
+                                <span class="fw-bold">{{ user.first_name }} {{ user.last_name }}</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Email</span>
+                                <span>{{ user.email }}</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Phone</span>
+                                <span>{{ profile.phone_number }}</span>
+                            </li>
+                            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Gender / Age</span>
+                                <span>{{ profile.get_gender_display }} / {{ profile.age }} yrs</span>
+                            </li>
+                            <li class="list-group-item px-0">
+                                <span class="text-muted d-block mb-1">Address</span>
+                                <span>{{ profile.address }}</span>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">Profile information is missing. Please complete your registration.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

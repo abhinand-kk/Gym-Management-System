@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block header %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body py-5 text-center">
+                <h1 class="display-4 fw-bold">{{ total_clients }}</h1>
+                <p class="lead mb-0">Total Clients</p>
+                <i class="bi bi-people position-absolute opacity-25" style="top: 20px; right: 20px; font-size: 5rem;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body py-5 text-center">
+                <h1 class="display-4 fw-bold">{{ active_memberships }}</h1>
+                <p class="lead mb-0">Active Memberships</p>
+                <i class="bi bi-check-circle position-absolute opacity-25" style="top: 20px; right: 20px; font-size: 5rem;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white h-100">
+            <div class="card-body py-5 text-center">
+                <h1 class="display-4 fw-bold">{{ expired_memberships }}</h1>
+                <p class="lead mb-0">Expired Memberships</p>
+                <i class="bi bi-x-circle position-absolute opacity-25" style="top: 20px; right: 20px; font-size: 5rem;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Recent Registrations</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Client</th>
+                                <th>Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for membership in recent_registrations %}
+                            <tr>
+                                <td>{{ membership.client }}</td>
+                                <td><span class="badge bg-secondary">{{ membership.membership_type }}</span></td>
+                                <td>{{ membership.start_date }}</td>
+                                <td>{{ membership.end_date }}</td>
+                                <td>
+                                    {% if membership.payment_status == 'Paid' %}
+                                        <span class="badge bg-success">Paid</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center py-3">No recent registrations.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
