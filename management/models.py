@@ -9,6 +9,7 @@ class ClientProfile(models.Model):
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='client_profile')
+    client_name = models.CharField(max_length=150, default="")
     age = models.PositiveIntegerField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     phone_number = models.CharField(max_length=20)
@@ -19,9 +20,17 @@ class ClientProfile(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        
+    def save(self, *args, **kwargs):
+        if not self.client_name:
+            name = f"{self.user.first_name} {self.user.last_name}".strip()
+            self.client_name = name if name else self.user.username
+        super().save(*args, **kwargs)
     
     def __str__(self):
-        # Fallback to username if names aren't provided
+        if self.client_name:
+            return self.client_name
+        # Fallback to user names if client_name is not provided yet
         name = f"{self.user.first_name} {self.user.last_name}".strip()
         return name if name else self.user.username
 
