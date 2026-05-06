@@ -22,3 +22,15 @@ class MembershipForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+from django.contrib.auth.forms import UserCreationForm
+
+class SimpleUserCreationForm(UserCreationForm):
+    username = forms.CharField(
+        max_length=150,
+        help_text="Required. 150 characters or fewer.",
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username",)

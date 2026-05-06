@@ -8,7 +8,7 @@ from .forms import ClientProfileForm, MembershipForm
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from .forms import SimpleUserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 
@@ -33,7 +33,7 @@ class PlansView(TemplateView):
     template_name = 'management/plans.html'
 
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = SimpleUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
     def form_valid(self, form):
