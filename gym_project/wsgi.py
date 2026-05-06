@@ -14,3 +14,12 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gym_project.settings')
 
 application = get_wsgi_application()
+
+# Auto-create default admin user for convenience
+try:
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+except Exception as e:
+    print("Could not auto-create superuser:", e)
